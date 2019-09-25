@@ -11,6 +11,18 @@ type SerialNumber struct {
 }
 
 //Create is for creating a serial number on a product.
+// epFulfillment.SetAPIKey("YOUR-API-KEY")
+// product, err := epFulfillment.RetrieveProduct("PRODUCT-ID")
+// serialNumber, err := epFulfillment.SerialNumber{
+// 	Product: product,
+// 	Value:   "abcd123456",
+// }.Create()
+// if err != nil {
+// 	fmt.Fprintln(os.Stderr, "error creating", err)
+// 	os.Exit(1)
+// 	return
+// }
+// fmt.Printf("%+v\n", serialNumber)
 func (serialNumber SerialNumber) Create() (s SerialNumber, err error) {
 	err = mainRequest("POST", "products/"+serialNumber.Product.ID+"/serial_numbers", serialNumber, &s)
 	return

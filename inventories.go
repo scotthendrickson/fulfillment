@@ -15,12 +15,25 @@ type InventoriesList struct {
 }
 
 //RetrieveInventories can be used to retrieve all inventories on your products or only specific products
-//If you want to retrieve information on only specific products just supply a list of all the product id's you want information on
-//The includes option should be limited to a list of one or two string and the only possible values are "product" or "warehouse".
-//If product is supplied the whole product object will be returned, and if not included just the products ID will be returned
-//If warehouse is supplied the whole warehouse object will be returned, and if not just the warehouse ID will be returned
-//If no includes or products are passed into the function than a list of all product id's, the warehouse id's where they are stored
-//and their quantity will be returned
+//This one can take two arguements, a list of product id's, and an Includes list. If a list of product id's is not supplied
+//it will return all products and their quantity of units in each warehouse. Any product id's supplied in the list will limit
+//the returned information to just those products.
+//The includes list can consist of only two string options, either "product" or "warehouse". If you put "product" in the list it
+//will return the whole product object and quantity of units in each warehouse. For "warehouse" if you include it in the list it
+//will return the full warehouse object but if left out it will only return the warehouse id.
+//Example calls:
+// epFulfillment.SetAPIKey("YOUR-API-KEY")
+//This will return a information on a single product, the warehouse id's, product id, and quantity of units in each warehouse
+//inventories, err := epFulfillment.RetrieveInventories([]string{"PRODUCT-ID"}, []string{})
+//
+//This will return a information on a single product, the warehouse id's, the product object, and quantity of units in each warehouse
+//inventories, err := epFulfillment.RetrieveInventories([]string{"PRODUCT-ID"}, []string{"product"})
+//
+//This will return a information on a single product, the each warehouse object, product id, and quantity of units in each warehouse
+//inventories, err := epFulfillment.RetrieveInventories([]string{"PRODUCT-ID"}, []string{"warehouse"})
+//
+//This will return a information on a single product, the each warehouse object, the product object, and quantity of units in each warehouse
+//inventories, err := epFulfillment.RetrieveInventories([]string{"PRODUCT-ID"}, []string{"product", "warehouse"})
 func RetrieveInventories(productIds []string, includes []string) (il InventoriesList, err error) {
 	url := ""
 	if includes != nil || productIds != nil {

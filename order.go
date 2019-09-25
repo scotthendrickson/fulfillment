@@ -5,7 +5,7 @@ type Orders struct {
 	Orders []Order `json:"orders,omitempty"`
 }
 
-//Order for orders to teh EP API
+//Order describes the destination and the set of purchased goods to be mailed to that destination.
 type Order struct {
 	ID              string          `json:"id,omitempty"`
 	CreatedAt       int             `json:"created_at,omitempty"`
@@ -23,7 +23,7 @@ type Order struct {
 	Service         string          `json:"service,omitempty"`
 }
 
-//OrderLineItem for individual line items on orders
+//OrderLineItem for individual products on orders
 type OrderLineItem struct {
 	ID        string  `json:"id,omitempty"`
 	CreatedAt int     `json:"created_at,omitempty"`
@@ -35,7 +35,7 @@ type OrderLineItem struct {
 
 //Currently ignoring Metadata on Inserts but I'll have to work that out later
 
-//Insert is for notes that could be put inside of the orders shipment
+//Insert is for specific documents that could be put inside of the orders shipment
 type Insert struct {
 	ID        string `json:"id,omitempty"`
 	CreatedAt int    `json:"created_at,omitempty"`
@@ -45,14 +45,15 @@ type Insert struct {
 	ACL       string `json:"acl,omitempty"`
 }
 
-//Pick species which inventory will be part of the pick
+//Pick after an order has been received by the warehouse a pick will be initialized which will describe how many
+// items are sent in each package as well as the tracker for that package
 type Pick struct {
-	ID        string `json:"id,omitempty"`
-	CreatedAt int    `json:"created_at,omitempty"`
-	UpdatedAt int    `json:"updated_at,omitempty"`
-	Mode      string `json:"mode,omitempty"`
-	// Tracker Tracker `json:"tracker,omitempty"`
-	// Inventories Inventory[] `json:"inventories,omitempty"`
+	ID          string      `json:"id,omitempty"`
+	CreatedAt   int         `json:"created_at,omitempty"`
+	UpdatedAt   int         `json:"updated_at,omitempty"`
+	Mode        string      `json:"mode,omitempty"`
+	Tracker     Tracker     `json:"tracker,omitempty"`
+	Inventories []Inventory `json:"inventories,omitempty"`
 }
 
 //Inventory list of products and quantities
@@ -105,36 +106,84 @@ type Address struct {
 }
 
 //Create is for creating a single product
+//epFulfillment.SetAPIKey("YOUR-API-KEY")
+// product, err := epFulfillment.RetrieveProduct("PRODUCT-ID")
+// orderLineItem := epFulfillment.OrderLineItem{
+// 	Product: product,
+// 	Units:   1,
+// }
+// order, err := epFulfillment.Order{
+// 	Service:     "Standard",
+// 	LineItems:   []epFulfillment.OrderLineItem{orderLineItem},
+// 	Description: "PO#12345",
+// 	Destination: epFulfillment.Address{
+// 		Name:    "Scott Hendrickson",
+// 		Street1: "417 MONTGOMERY ST FL 5",
+// 		City:    "San Francisco",
+// 		State:   "CA",
+// 		Zip:     "94104",
+// 		Country: "US",
+// 	},
+// 	ShipmentOptions: epFulfillment.Options{
+// 		DeliveryConfirmation: "SIGNATURE",
+// 		Insurance:            false,
+// 	},
+// }.Create()
+// if err != nil {
+// 	fmt.Fprintln(os.Stderr, "error creating", err)
+// 	os.Exit(1)
+// 	return
+// }
+// fmt.Printf("%+v\n", order)
 func (order Order) Create() (o Order, err error) {
 	err = mainRequest("POST", "orders/", order, &o)
 	return
 }
 
 //RetrieveAllOrders will retrieve a list of all orders on the account
+//epFulfillment.SetAPIKey("YOUR-API-KEY")
+//orders, err := epFulfillment.RetrieveAllOrders()
 func RetrieveAllOrders() (orders Orders, err error) {
 	err = mainRequest("GET", "orders/", nil, &orders)
 	return
 }
 
 //RetrieveOrder will retrieve an order by it's ID
+//epFulfillment.SetAPIKey("YOUR-API-KEY")
+//order, err := epFulfillment.RetrieveOrder("ORDER-ID")
 func RetrieveOrder(id string) (o Order, err error) {
 	err = mainRequest("GET", "orders/"+id, nil, &o)
 	return
-	// return o, Get(fmt.Sprintf("orders/%s", id), &o)
 }
 
 //Update can be used to patch an order once retrieved
+//epFulfillment.SetAPIKey("YOUR-API-KEY")
+//order, err := epFulfillment.RetrieveOrder("ORDER-ID")
+//	order.Destination = epFulfillment.Address{
+// 	Name:    "Scott Hendrickson",
+// 	Street1: "417 MONTGOMERY ST FL 5",
+// 	City:    "San Francisco",
+// 	State:   "CA",
+// 	Zip:     "94104",
+// 	Country: "US",
+// }
+// order.Update()
 func (order Order) Update() (o Order, err error) {
 	err = mainRequest("PATCH", "orders/"+order.ID, order, &o)
 	return
 }
 
 //Delete can be used to delete an order once retrieved
+//epFulfillment.SetAPIKey("YOUR-API-KEY")
+//order, err := epFulfillment.RetrieveOrder("ORDER-ID")
+//order.Delete()
 func (order Order) Delete() error {
 	return mainRequest("DELETE", "orders/"+order.ID, order, nil)
 }
 
 //DeleteOrder can be used to delete an order using just the ID without retrieving the order first
+//epFulfillment.SetAPIKey("YOUR-API-KEY")
+//epFulfillment.DeleteOrder("ORDER-ID")
 func DeleteOrder(id string) error {
 	return mainRequest("DELETE", "orders/"+id, nil, nil)
 }

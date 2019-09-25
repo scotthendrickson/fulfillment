@@ -18,14 +18,9 @@ type Warehouses struct {
 }
 
 //RetrieveAllWarehouses will allow you to retrieve a list of all warehouses
+//epFulfillment.SetAPIKey("YOUR-API-KEY")
+//warehouses, err := epFulfillment.RetrieveAllWarehouses()
 func RetrieveAllWarehouses() (warehouses Warehouses, err error) {
 	err = mainRequest("GET", "warehouses", nil, &warehouses)
 	return
 }
-
-//Doesn't seem to be a way to retrieve a single warehouse?
-//RetrieveWarehouse takes a string ID and returns an EasyPost warehouse object
-// func RetrieveWarehouse(id string) (warehouse Warehouse, err error) {
-// 	err = mainRequest("GET", "warehouses/"+id, nil, &warehouse)
-// 	return
-// }

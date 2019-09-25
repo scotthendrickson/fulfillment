@@ -15,6 +15,11 @@ const BaseURL = "https://api.easypost.com/fulfillment/vendor/v2/"
 //APIKey is for authentication with the EasyPost API and is required
 var APIKey string
 
+//SetAPIKey will allow you to set the API key on the request
+func SetAPIKey(apiKey string) {
+	APIKey = apiKey
+}
+
 //mainRequest is the base function for doing any call to the EP Fulfillment
 //API. It can be used to facilitate any crud operation
 func mainRequest(method, path string, in, out interface{}) error {
@@ -55,9 +60,4 @@ func mainRequest(method, path string, in, out interface{}) error {
 	}
 
 	return apiErr
-}
-
-//SetAPIKey will allow you to set the API key on the request
-func SetAPIKey(apiKey string) {
-	APIKey = apiKey
 }
