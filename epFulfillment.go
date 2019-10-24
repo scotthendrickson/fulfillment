@@ -40,6 +40,9 @@ func mainRequest(method, path string, in, out interface{}) error {
 		req.SetBasicAuth(os.Getenv("epTest"), "")
 	}
 
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("User-Agent", "Scott's Fulfillment API GoClient/")
+
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		fmt.Println(err)
