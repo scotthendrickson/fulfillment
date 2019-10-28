@@ -41,7 +41,7 @@ func mainRequest(method, path string, in, out interface{}) error {
 	}
 
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("User-Agent", "Scott's Fulfillment API GoClient/")
+	req.Header.Set("User-Agent", "epFulfillment Go Client V0.0.1")
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
