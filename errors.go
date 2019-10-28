@@ -2,6 +2,9 @@ package epFulfillment
 
 import "fmt"
 
+//While working on this project EasyPost released a GoLang client for their shipping API (https://github.com/EasyPost/easypost-go). The error handling on that project was
+//very useful and so I borrowed it. You can reference that work here https://github.com/EasyPost/easypost-go/blob/master/error.go.
+
 // APIError provides data on why an API request failed. It will be the type
 // returned by Client methods when the HTTP API returns an HTTP error code. It
 // will not be returned on network, parsing or context errors.
