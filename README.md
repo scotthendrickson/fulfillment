@@ -28,20 +28,26 @@ import (
 
 func main() {
 
-    epFulfillment.SetAPIKey(os.Getenv("epTest"))
+    client := epFulfillment.New("YOUR-API-KEY")
 
-    product, err := epFulfillment.Product{
-        Title:         "T-Shirt Small",
-        Barcode:       "12345",
+    product, err := client.CreateProduct(&epFulfillment.Product{
+        Title:         "Tester McTester Mouse",
+        Barcode:       "8161616161616",
         Type:          "merchandise",
         OriginCountry: "US",
         HsCode:        "6103.22.0050",
-        Length:        epFulfillment.Dimension{Value: 15.0, Unit: "IN"},
-        Width:         epFulfillment.Dimension{Value: 7.0, Unit: "IN"},
-        Height:        epFulfillment.Dimension{Value: 1.0, Unit: "IN"},
-        Weight:        epFulfillment.Dimension{Value: 10.0, Unit: "OZ"},
-        Price:         epFulfillment.Dimension{Value: 20.0, Unit: "USD"},
-    }.Create()
+        Length:        &epFulfillment.Dimension{Value: 15.0, Unit: "IN"},
+        Width:         &epFulfillment.Dimension{Value: 7.0, Unit: "IN"},
+        Height:        &epFulfillment.Dimension{Value: 1.0, Unit: "IN"},
+        Weight:        &epFulfillment.Dimension{Value: 10.0, Unit: "OZ"},
+        Price:         &epFulfillment.Dimension{Value: 20.0, Unit: "USD"},
+    })
+if err != nil {
+    fmt.Fprintln(os.Stderr, "error creating", err)
+    os.Exit(1)
+    return
+}
+fmt.Printf("%+v\n", product)
 
     if err != nil {
         fmt.Fprintln(os.Stderr, "error creating", err)
