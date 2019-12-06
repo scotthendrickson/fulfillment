@@ -2,35 +2,35 @@ package epFulfillment
 
 //Orders a list of orders used for when a list is retrieved from the API
 type Orders struct {
-	Orders []Order `json:"orders,omitempty"`
+	Orders []*Order `json:"orders,omitempty"`
 }
 
 //Order describes the destination and the set of purchased goods to be mailed to that destination.
 type Order struct {
-	ID              string          `json:"id,omitempty"`
-	CreatedAt       int             `json:"created_at,omitempty"`
-	UpdatedAt       int             `json:"updated_at,omitempty"`
-	Mode            string          `json:"mode,omitempty"`
-	LatestDelivery  string          `json:"latest_delivery,omitempty"`
-	LineItems       []OrderLineItem `json:"line_items,omitempty"`
-	Inserts         []Insert        `json:"inserts,omitempty"`
-	Destination     Address         `json:"destination,omitempty"`
-	Description     string          `json:"description,omitempty"`
-	ShipmentOptions Options         `json:"shipment_options,omitempty"`
-	Status          string          `json:"status,omitempty"`
-	Picks           []Pick          `json:"picks,omitempty"`
-	Fees            []Fee           `json:"fees,omitempty"`
-	Service         string          `json:"service,omitempty"`
+	ID              string           `json:"id,omitempty"`
+	CreatedAt       int              `json:"created_at,omitempty"`
+	UpdatedAt       int              `json:"updated_at,omitempty"`
+	Mode            string           `json:"mode,omitempty"`
+	LatestDelivery  string           `json:"latest_delivery,omitempty"`
+	LineItems       []*OrderLineItem `json:"line_items,omitempty"`
+	Inserts         []*Insert        `json:"inserts,omitempty"`
+	Destination     *Address         `json:"destination,omitempty"`
+	Description     string           `json:"description,omitempty"`
+	ShipmentOptions *Options         `json:"shipment_options,omitempty"`
+	Status          string           `json:"status,omitempty"`
+	Picks           []*Pick          `json:"picks,omitempty"`
+	Fees            []*Fee           `json:"fees,omitempty"`
+	Service         string           `json:"service,omitempty"`
 }
 
 //OrderLineItem for individual products on orders
 type OrderLineItem struct {
-	ID        string  `json:"id,omitempty"`
-	CreatedAt int     `json:"created_at,omitempty"`
-	UpdatedAt int     `json:"updated_at,omitempty"`
-	Mode      string  `json:"mode,omitempty"`
-	Product   Product `json:"product,omitempty"`
-	Units     int     `json:"units,omitempty"`
+	ID        string   `json:"id,omitempty"`
+	CreatedAt int      `json:"created_at,omitempty"`
+	UpdatedAt int      `json:"updated_at,omitempty"`
+	Mode      string   `json:"mode,omitempty"`
+	Product   *Product `json:"product,omitempty"`
+	Units     int      `json:"units,omitempty"`
 }
 
 //Currently ignoring Metadata on Inserts but I'll have to work that out later
@@ -48,21 +48,21 @@ type Insert struct {
 //Pick after an order has been received by the warehouse a pick will be initialized which will describe how many
 // items are sent in each package as well as the tracker for that package
 type Pick struct {
-	ID          string      `json:"id,omitempty"`
-	CreatedAt   int         `json:"created_at,omitempty"`
-	UpdatedAt   int         `json:"updated_at,omitempty"`
-	Mode        string      `json:"mode,omitempty"`
-	Tracker     Tracker     `json:"tracker,omitempty"`
-	Inventories []Inventory `json:"inventories,omitempty"`
+	ID          string       `json:"id,omitempty"`
+	CreatedAt   int          `json:"created_at,omitempty"`
+	UpdatedAt   int          `json:"updated_at,omitempty"`
+	Mode        string       `json:"mode,omitempty"`
+	Tracker     *Tracker     `json:"tracker,omitempty"`
+	Inventories []*Inventory `json:"inventories,omitempty"`
 }
 
 //Inventory list of products and quantities
 type Inventory struct {
-	ID        string  `json:"id,omitempty"`
-	CreatedAt int     `json:"created_at,omitempty"`
-	UpdatedAt int     `json:"updated_at,omitempty"`
-	Mode      string  `json:"mode,omitempty"`
-	Product   Product `json:"product,omitempty"`
+	ID        string   `json:"id,omitempty"`
+	CreatedAt int      `json:"created_at,omitempty"`
+	UpdatedAt int      `json:"updated_at,omitempty"`
+	Mode      string   `json:"mode,omitempty"`
+	Product   *Product `json:"product,omitempty"`
 }
 
 //Options being set on the order
@@ -105,18 +105,18 @@ type Address struct {
 	Residential  bool   `json:"residential,omitempty"`
 }
 
-//Create is for creating a single product
-//epFulfillment.SetAPIKey("YOUR-API-KEY")
-// product, err := epFulfillment.RetrieveProduct("PRODUCT-ID")
-// orderLineItem := epFulfillment.OrderLineItem{
+//CreateOrder is for creating a single product
+//client := epFulfillment.New("YOUR-API-KEY")
+// product, err := client.GetProduct("PRODUCT-ID")
+// orderLineItem := &epFulfillment.OrderLineItem{
 // 	Product: product,
 // 	Units:   1,
 // }
-// order, err := epFulfillment.Order{
+// order, err := client.CreateOrder(&epFulfillment.Order{
 // 	Service:     "Standard",
-// 	LineItems:   []epFulfillment.OrderLineItem{orderLineItem},
+// 	LineItems:   []*epFulfillment.OrderLineItem{orderLineItem},
 // 	Description: "PO#12345",
-// 	Destination: epFulfillment.Address{
+// 	Destination: &epFulfillment.Address{
 // 		Name:    "Scott Hendrickson",
 // 		Street1: "417 MONTGOMERY ST FL 5",
 // 		City:    "San Francisco",
@@ -124,66 +124,51 @@ type Address struct {
 // 		Zip:     "94104",
 // 		Country: "US",
 // 	},
-// 	ShipmentOptions: epFulfillment.Options{
+// 	ShipmentOptions: &epFulfillment.Options{
 // 		DeliveryConfirmation: "SIGNATURE",
 // 		Insurance:            false,
 // 	},
-// }.Create()
+// })
 // if err != nil {
 // 	fmt.Fprintln(os.Stderr, "error creating", err)
 // 	os.Exit(1)
 // 	return
 // }
 // fmt.Printf("%+v\n", order)
-func (order Order) Create() (o Order, err error) {
-	err = mainRequest("POST", "orders/", order, &o)
+func (c *Client) CreateOrder(order *Order) (o *Order, err error) {
+	err = c.mainRequest("POST", "orders/", order, &o)
 	return
 }
 
-//RetrieveAllOrders will retrieve a list of all orders on the account
-//epFulfillment.SetAPIKey("YOUR-API-KEY")
-//orders, err := epFulfillment.RetrieveAllOrders()
-func RetrieveAllOrders() (orders Orders, err error) {
-	err = mainRequest("GET", "orders/", nil, &orders)
+//ListOrders will retrieve a list of all orders on the account
+//client := epFulfillment.New("YOUR-API-KEY")
+//orders, err := client.ListOrders()
+func (c *Client) ListOrders() (orders *Orders, err error) {
+	err = c.mainRequest("GET", "orders/", nil, &orders)
 	return
 }
 
-//RetrieveOrder will retrieve an order by it's ID
-//epFulfillment.SetAPIKey("YOUR-API-KEY")
-//order, err := epFulfillment.RetrieveOrder("ORDER-ID")
-func RetrieveOrder(id string) (o Order, err error) {
-	err = mainRequest("GET", "orders/"+id, nil, &o)
+//GetOrder will retrieve an order by it's ID
+//client := epFulfillment.New("YOUR-API-KEY")
+//order, err := client.GetOrder("ORDER-ID")
+func (c *Client) GetOrder(id string) (o *Order, err error) {
+	err = c.mainRequest("GET", "orders/"+id, nil, &o)
 	return
 }
 
-//Update can be used to patch an order once retrieved
-//epFulfillment.SetAPIKey("YOUR-API-KEY")
-//order, err := epFulfillment.RetrieveOrder("ORDER-ID")
-//	order.Destination = epFulfillment.Address{
-// 	Name:    "Scott Hendrickson",
-// 	Street1: "417 MONTGOMERY ST FL 5",
-// 	City:    "San Francisco",
-// 	State:   "CA",
-// 	Zip:     "94104",
-// 	Country: "US",
-// }
-// order.Update()
-func (order Order) Update() (o Order, err error) {
-	err = mainRequest("PATCH", "orders/"+order.ID, order, &o)
+//UpdateOrder can be used to patch an order once retrieved
+//client := epFulfillment.New("YOUR-API-KEY")
+// order, err := client.GetOrder("order_b1e95719f84a4fe6a56e57a9177b5e08")
+// order.Description = "PO#54321"
+// order, err = client.UpdateOrder(order)
+func (c *Client) UpdateOrder(order *Order) (o *Order, err error) {
+	err = c.mainRequest("PATCH", "orders/"+order.ID, order, &o)
 	return
-}
-
-//Delete can be used to delete an order once retrieved
-//epFulfillment.SetAPIKey("YOUR-API-KEY")
-//order, err := epFulfillment.RetrieveOrder("ORDER-ID")
-//order.Delete()
-func (order Order) Delete() error {
-	return mainRequest("DELETE", "orders/"+order.ID, order, nil)
 }
 
 //DeleteOrder can be used to delete an order using just the ID without retrieving the order first
-//epFulfillment.SetAPIKey("YOUR-API-KEY")
-//epFulfillment.DeleteOrder("ORDER-ID")
-func DeleteOrder(id string) error {
-	return mainRequest("DELETE", "orders/"+id, nil, nil)
+//client := epFulfillment.New("YOUR-API-KEY")
+//client.DeleteOrder("ORDER-ID")
+func (c *Client) DeleteOrder(id string) error {
+	return c.mainRequest("DELETE", "orders/"+id, nil, nil)
 }

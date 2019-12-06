@@ -11,93 +11,80 @@ type AdvancedShipmentNotice struct {
 	URL               string `json:"url,omitempty"`
 	Status            string `json:"status,omitempty"`
 	//On the retrun response you'll get a warehouse obj
-	Warehouse Warehouse `json:"warehouse,omitempty"`
-	//For creating an AdvancedShipmentNotice you can pass a warehouse id instead of a warehouse obj
+	Warehouse *Warehouse `json:"warehouse,omitempty"`
+	//For creating an AdvancedShipmentNotice you must pass a warehouse id
 	WarehouseID string `json:"warehouse_id,omitempty"`
 }
 
 //ASNList is for when you retrieve a list of ASN's on the account
 type ASNList struct {
-	AdvancedShipmentNotices []AdvancedShipmentNotice `json:"advanced_shipment_notices,omitempty"`
+	AdvancedShipmentNotices []*AdvancedShipmentNotice `json:"advanced_shipment_notices,omitempty"`
 }
 
 //ListOptions is for specifying what options you want set on the get all request
 type ListOptions struct {
 	Limit   int64 `json:"limit,omitempty"`
 	Offset  int64 `json:"offset,omitempty"`
-	Page    int64 `json:"page,omitempty"`
+	Page    int   `json:"page,omitempty"`
 	PerPage int64 `json:"per_page,omitempty"`
 }
 
-//Create is for creating an ASN with the EP fulfillment API
-// epFulfillment.SetAPIKey("YOUR-API-KEY")
-// advancedShipmentNotice := epFulfillment.AdvancedShipmentNotice{
-// 	Comments:    "PO#123456",
-// 	WarehouseID: "WAREHOUSE-ID",
-// }.Create()
+//CreateASN is for creating an ASN with the EP fulfillment API
+// client := epFulfillment.New("YOUR-API-KEY")
+// asn, err := client.CreateASN(&epFulfillment.AdvancedShipmentNotice{
+// 	Comments: "PO#123456",
+// 	WarehouseID: "wh_303046cf435e416ba334618730dd7c2b",
+// })
 // if err != nil {
 // 	fmt.Fprintln(os.Stderr, "error creating", err)
 // 	os.Exit(1)
 // 	return
 // }
-// fmt.Printf("%+v\n", advancedShipmentNotice)
-func (asn AdvancedShipmentNotice) Create() (a AdvancedShipmentNotice, err error) {
-	err = mainRequest("POST", "advanced_shipment_notices/", asn, &a)
+// fmt.Printf("%+v\n", asn)
+func (c *Client) CreateASN(asn *AdvancedShipmentNotice) (a *AdvancedShipmentNotice, err error) {
+	err = c.mainRequest("POST", "advanced_shipment_notices/", asn, &a)
 	return
 }
 
-//Update is for updating an ASN with any necessary changes
-// epFulfillment.SetAPIKey("YOUR-API-KEY")
-// advancedShipmentNotice, err := epFulfillment.RetrieveASN("ADVANCED-SHIPMENT-NOTICE-ID")
-// advancedShipmentNotice.Comments = "PO#654321"
-// advancedShipmentNotice.Update()
-func (asn AdvancedShipmentNotice) Update() (a AdvancedShipmentNotice, err error) {
-	err = mainRequest("PATCH", "advanced_shipment_notices/"+asn.ID, asn, &a)
+//UpdateASN is for updating an ASN with any necessary changes
+// client := epFulfillment.New("YOUR-API-KEY")
+// asn, err := client.GetASN("ADVANCED-SHIPMENT-NOTICE-ID")
+// 	asn.Comments = "PO#555555"
+// 	asn, err = client.UpdateASN(asn)
+func (c *Client) UpdateASN(asn *AdvancedShipmentNotice) (a *AdvancedShipmentNotice, err error) {
+	err = c.mainRequest("PATCH", "advanced_shipment_notices/"+asn.ID, asn, &a)
 	return
 }
 
-//MarkComplete is for updating an ASN as completed
-// epFulfillment.SetAPIKey("YOUR-API-KEY")
-// advancedShipmentNotice, err := epFulfillment.RetrieveASN("ADVANCED-SHIPMENT-NOTICE-ID")
-// advancedShipmentNotice.MarkComplete()
-func (asn AdvancedShipmentNotice) MarkComplete() (a AdvancedShipmentNotice, err error) {
-	err = mainRequest("PATCH", "advanced_shipment_notices/"+asn.ID+"/complete", asn, &a)
+//MarkASNComplete is for updating an ASN as completed
+// client := epFulfillment.New("YOUR-API-KEY")
+// asn, err := client.MarkASNComplete("ADVANCED-SHIPMENT-NOTICE-ID")
+func (c *Client) MarkASNComplete(id string) (a *AdvancedShipmentNotice, err error) {
+	err = c.mainRequest("PATCH", "advanced_shipment_notices/"+id+"/complete", nil, &a)
 	return
-}
-
-//Delete is used to delete an ASN
-// epFulfillment.SetAPIKey("YOUR-API-KEY")
-// advancedShipmentNotice, err := epFulfillment.RetrieveASN("ADVANCED-SHIPMENT-NOTICE-ID")
-// advancedShipmentNotice.Delete()
-func (asn AdvancedShipmentNotice) Delete() error {
-	return mainRequest("DELETE", "advanced_shipment_notices/"+asn.ID, nil, nil)
 }
 
 //DeleteASN is used to delete an ASN
-// epFulfillment.SetAPIKey("YOUR-API-KEY")
-// advancedShipmentNotice.DeleteASN("ADVANCED-SHIPMENT-NOTICE-ID")
-func DeleteASN(id string) error {
-	return mainRequest("DELETE", "advanced_shipment_notices/"+id, nil, nil)
+// client := epFulfillment.New("YOUR-API-KEY")
+// err := client.DeleteASN("ADVANCED-SHIPMENT-NOTICE-ID")
+func (c *Client) DeleteASN(id string) error {
+	return c.mainRequest("DELETE", "advanced_shipment_notices/"+id, nil, nil)
 }
 
-//RetrieveAllASN will retrieve a list of all Advanced Shipment Notices on the account
-// epFulfillment.SetAPIKey("YOUR-API-KEY")
-// listOptions := epFulfillment.ListOptions{
-// 	Limit:   10,
-// 	Offset:  0,
-// 	Page:    1,
-// 	PerPage: 2,
-// }
-// asnList, err := epFulfillment.RetrieveAllASN(listOptions)
-func RetrieveAllASN(in ListOptions) (asnlist ASNList, err error) {
-	err = mainRequest("GET", "advanced_shipment_notices", in, &asnlist)
+//ListASNs will retrieve a list of all Advanced Shipment Notices on the account
+// client := epFulfillment.New("YOUR-API-KEY")
+// asnList, err := client.ListASNs(&epFulfillment.ListOptions{
+// 		PerPage: 30,
+// 	})
+func (c *Client) ListASNs(in *ListOptions) (asnlist *ASNList, err error) {
+	err = c.mainRequest("GET", "advanced_shipment_notices", in, &asnlist)
 	return
 }
 
-//RetrieveASN will retrieve a single ASN by id provided
-// epFulfillment.SetAPIKey("YOUR-API-KEY")
-// advancedShipmentNotice, err := epFulfillment.RetrieveASN("ADVANCED-SHIPMENT-NOTICE-ID")
-func RetrieveASN(id string) (a AdvancedShipmentNotice, err error) {
-	err = mainRequest("GET", "advanced_shipment_notices/"+id, nil, &a)
+//GetASN will retrieve a single ASN by id provided
+// client := epFulfillment.New("YOUR-API-KEY")
+// asn, err := client.GetASN("ADVANCED-SHIPMENT-NOTICE-ID")
+func (c *Client) GetASN(id string) (a *AdvancedShipmentNotice, err error) {
+	err = c.mainRequest("GET", "advanced_shipment_notices/"+id, nil, &a)
 	return
 }
