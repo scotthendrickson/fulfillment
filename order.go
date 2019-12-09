@@ -1,4 +1,6 @@
-package epFulfillment
+package fulfillment
+
+import "net/http"
 
 //Orders a list of orders used for when a list is retrieved from the API
 type Orders struct {
@@ -136,15 +138,15 @@ type Address struct {
 // }
 // fmt.Printf("%+v\n", order)
 func (c *Client) CreateOrder(order *Order) (o *Order, err error) {
-	err = c.mainRequest("POST", "orders/", order, &o)
+	err = c.post(nil, "orders/", order, &o)
 	return
 }
 
 //ListOrders will retrieve a list of all orders on the account
 //client := epFulfillment.New("YOUR-API-KEY")
 //orders, err := client.ListOrders()
-func (c *Client) ListOrders() (orders *Orders, err error) {
-	err = c.mainRequest("GET", "orders/", nil, &orders)
+func (c *Client) ListOrders(opt *ListOptions) (orders *Orders, err error) {
+	err = c.do(nil, http.MethodGet, "orders/", opt, &orders)
 	return
 }
 
@@ -152,7 +154,7 @@ func (c *Client) ListOrders() (orders *Orders, err error) {
 //client := epFulfillment.New("YOUR-API-KEY")
 //order, err := client.GetOrder("ORDER-ID")
 func (c *Client) GetOrder(id string) (o *Order, err error) {
-	err = c.mainRequest("GET", "orders/"+id, nil, &o)
+	err = c.get(nil, "orders/"+id, &o)
 	return
 }
 
@@ -162,7 +164,7 @@ func (c *Client) GetOrder(id string) (o *Order, err error) {
 // order.Description = "PO#54321"
 // order, err = client.UpdateOrder(order)
 func (c *Client) UpdateOrder(order *Order) (o *Order, err error) {
-	err = c.mainRequest("PATCH", "orders/"+order.ID, order, &o)
+	err = c.patch(nil, "orders/"+order.ID, order, &o)
 	return
 }
 
@@ -170,5 +172,5 @@ func (c *Client) UpdateOrder(order *Order) (o *Order, err error) {
 //client := epFulfillment.New("YOUR-API-KEY")
 //client.DeleteOrder("ORDER-ID")
 func (c *Client) DeleteOrder(id string) error {
-	return c.mainRequest("DELETE", "orders/"+id, nil, nil)
+	return c.del(nil, "orders/"+id)
 }

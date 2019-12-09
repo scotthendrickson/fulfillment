@@ -1,4 +1,6 @@
-package epFulfillment
+package fulfillment
+
+import "net/http"
 
 //Products is a list of products used when using ListProducts
 type Products struct {
@@ -25,6 +27,12 @@ type Product struct {
 	Price                  *Dimension `json:"price,omitempty"`
 }
 
+//Dimension is used within Product struct to designate a value and unit type for the dimension being specified
+type Dimension struct {
+	Value float64 `json:"value,omitempty"`
+	Unit  string  `json:"unit,omitempty"`
+}
+
 //CreateProduct is used to create a new Product object.
 // client := epFulfillment.New("YOUR-API-KEY")
 // 	product, err := client.CreateProduct(&epFulfillment.Product{
@@ -46,7 +54,7 @@ type Product struct {
 // }
 // fmt.Printf("%+v\n", product)
 func (c *Client) CreateProduct(product *Product) (p *Product, err error) {
-	err = c.mainRequest("POST", "products/", product, &p)
+	err = c.post(nil, "products/", product, &p)
 	return
 }
 
@@ -60,7 +68,7 @@ func (c *Client) CreateProduct(product *Product) (p *Product, err error) {
 // 	}
 // fmt.Printf("%+v\n", product)
 func (c *Client) GetProduct(id string) (p *Product, err error) {
-	err = c.mainRequest("GET", "products/"+id, nil, &p)
+	err = c.get(nil, "products/"+id, &p)
 	return
 }
 
@@ -79,7 +87,7 @@ func (c *Client) GetProduct(id string) (p *Product, err error) {
 // 		fmt.Printf("%+v\n", products.Products[i].ID)
 // 	}
 func (c *Client) ListProducts(opt *ListOptions) (products *Products, err error) {
-	err = c.mainRequest("GET", "products/", &opt, &products)
+	err = c.do(nil, http.MethodGet, "products/", opt, &products)
 	return
 }
 
@@ -90,7 +98,7 @@ func (c *Client) ListProducts(opt *ListOptions) (products *Products, err error) 
 // product, err = client.UpdateProduct(product)
 // fmt.Printf("%+v\n", product)
 func (c *Client) UpdateProduct(product *Product) (p *Product, err error) {
-	err = c.mainRequest("PATCH", "products/"+product.ID, &product, &p)
+	err = c.patch(nil, "products/"+product.ID, &product, &p)
 	return
 }
 
@@ -98,5 +106,5 @@ func (c *Client) UpdateProduct(product *Product) (p *Product, err error) {
 // client := epFulfillment.New("YOUR-API-KEY")
 // client.DeleteProduct("PRODUCT-ID")
 func (c *Client) DeleteProduct(id string) error {
-	return c.mainRequest("DELETE", "products/"+id, nil, nil)
+	return c.del(nil, "products/"+id)
 }

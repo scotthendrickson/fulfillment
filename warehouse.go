@@ -1,4 +1,4 @@
-package epFulfillment
+package fulfillment
 
 //Warehouse is how to manage where your inventory is
 type Warehouse struct {
@@ -21,6 +21,6 @@ type Warehouses struct {
 //epFulfillment.SetAPIKey("YOUR-API-KEY")
 //warehouses, err := epFulfillment.RetrieveAllWarehouses()
 func (c *Client) ListWarehouses() (warehouses *Warehouses, err error) {
-	err = c.mainRequest("GET", "warehouses", nil, &warehouses)
+	err = c.get(nil, "warehouses", &warehouses)
 	return
 }

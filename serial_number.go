@@ -1,4 +1,4 @@
-package epFulfillment
+package fulfillment
 
 //SerialNumber is for serial numbers on Products. As EP defines "A unique identifier for an instance of a Product, aka an Inventory."
 type SerialNumber struct {
@@ -23,7 +23,7 @@ type SerialNumber struct {
 // 		return
 // 	}
 // 	fmt.Println(serialNumber.ID)
-func (c *Client) CreateSerialNumber(serialNumber *SerialNumber) (s SerialNumber, err error) {
-	err = c.mainRequest("POST", "products/"+serialNumber.Product.ID+"/serial_numbers", serialNumber, &s)
+func (c *Client) CreateSerialNumber(serialNumber *SerialNumber) (s *SerialNumber, err error) {
+	err = c.post(nil, "products/"+serialNumber.Product.ID+"/serial_numbers", serialNumber, &s)
 	return
 }

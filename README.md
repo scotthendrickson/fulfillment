@@ -42,12 +42,6 @@ func main() {
         Weight:        &epFulfillment.Dimension{Value: 10.0, Unit: "OZ"},
         Price:         &epFulfillment.Dimension{Value: 20.0, Unit: "USD"},
     })
-if err != nil {
-    fmt.Fprintln(os.Stderr, "error creating", err)
-    os.Exit(1)
-    return
-}
-fmt.Printf("%+v\n", product)
 
     if err != nil {
         fmt.Fprintln(os.Stderr, "error creating", err)

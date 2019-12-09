@@ -1,4 +1,9 @@
-package epFulfillment
+package fulfillment
+
+import (
+	"net/http"
+	"net/url"
+)
 
 //Inventories consists of the warehouse where the product is stored and relevant information regarding that product
 type Inventories struct {
@@ -36,22 +41,25 @@ type InventoriesList struct {
 //This will return a information on a single product, the each warehouse object, the product object, and quantity of units in each warehouse
 //inventories, err := client.ListInventories([]string{"PRODUCT-ID"}, []string{"product", "warehouse"}, nil)
 func (c *Client) ListInventories(productIds []string, includes []string, opt *ListOptions) (il InventoriesList, err error) {
-	url := ""
-	if includes != nil || productIds != nil {
-		url = "?"
-	}
+	baseURL, err := url.Parse("inventories")
+
+	params := url.Values{}
+
 	if productIds != nil {
 		for i := range productIds {
-			url = url + "&product_ids[]=" + productIds[i]
+			params.Add("product_ids[]", productIds[i])
 		}
 	}
+
 	if includes != nil {
 		for i := range includes {
 			if includes[i] == "product" || includes[i] == "warehouse" {
-				url = url + "&includes[]=" + includes[i]
+				params.Add("includes[]", includes[i])
 			}
 		}
 	}
-	err = c.mainRequest("GET", "inventories"+url, &opt, &il)
+	baseURL.RawQuery = params.Encode()
+
+	err = c.do(nil, http.MethodGet, baseURL.String(), &opt, &il)
 	return
 }

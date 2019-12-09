@@ -1,4 +1,6 @@
-package epFulfillment
+package fulfillment
+
+import "net/http"
 
 //OrderReturn describes the origin, the destination and the set of returning goods from original order to
 //be mailed to that destination
@@ -55,7 +57,7 @@ type OrderReturnLineItem struct {
 // 	OrderID: "ORDER-ID",
 // })
 func (c *Client) CreateOrderReturn(orderReturn *OrderReturn) (or *OrderReturn, err error) {
-	err = c.mainRequest("POST", "order_returns", orderReturn, &or)
+	err = c.post(nil, "order_returns", orderReturn, &or)
 	return
 }
 
@@ -63,7 +65,7 @@ func (c *Client) CreateOrderReturn(orderReturn *OrderReturn) (or *OrderReturn, e
 //client := epFulfillment.New("YOUR-API-KEY")
 //epFulfillment.DeleteOrderReturn("ORDER-RETURN-ID")
 func (c *Client) DeleteOrderReturn(id string) error {
-	return c.mainRequest("DELETE", "order_returns/"+id, nil, nil)
+	return c.del(nil, "order_returns/"+id)
 }
 
 //ListOrderReturns will return a list of all your order returns
@@ -72,8 +74,8 @@ func (c *Client) DeleteOrderReturn(id string) error {
 // 	PerPage: 3,
 // 	Page:    0,
 // })
-func (c *Client) ListOrderReturns(in *ListOptions) (or *OrderReturnList, err error) {
-	err = c.mainRequest("GET", "order_returns", in, &or)
+func (c *Client) ListOrderReturns(opt *ListOptions) (or *OrderReturnList, err error) {
+	err = c.do(nil, http.MethodGet, "order_returns", opt, &or)
 	return
 }
 
@@ -81,6 +83,6 @@ func (c *Client) ListOrderReturns(in *ListOptions) (or *OrderReturnList, err err
 //client := epFulfillment.New("YOUR-API-KEY")
 // orderReturn, err := client.GetOrderReturn("ORDER-RETURN-ID")
 func (c *Client) GetOrderReturn(id string) (or *OrderReturn, err error) {
-	err = c.mainRequest("GET", "order_returns/"+id, nil, &or)
+	err = c.get(nil, "order_returns/"+id, &or)
 	return
 }

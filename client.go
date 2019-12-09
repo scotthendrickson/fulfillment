@@ -1,7 +1,8 @@
-package epFulfillment
+package fulfillment
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"io"
 	"io/ioutil"
@@ -106,7 +107,7 @@ func (c *Client) setBody(req *http.Request, in interface{}) error {
 	return nil
 }
 
-func (c *Client) mainRequest(method, path string, in, out interface{}) error {
+func (c *Client) do(ctx context.Context, method, path string, in, out interface{}) error {
 	req := &http.Request{
 		Method: method,
 		URL:    c.baseURL().ResolveReference(&url.URL{Path: path}),
@@ -117,7 +118,9 @@ func (c *Client) mainRequest(method, path string, in, out interface{}) error {
 		return err
 	}
 	req.SetBasicAuth(c.APIKey, "")
-
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
 	res, err := c.client().Do(req)
 	if err != nil {
 		return err
@@ -136,6 +139,25 @@ func (c *Client) mainRequest(method, path string, in, out interface{}) error {
 		apiErr.Message = string(buf)
 	}
 	return apiErr
+}
+
+func (c *Client) get(ctx context.Context, path string, out interface{}) error {
+	return c.do(ctx, http.MethodGet, path, nil, out)
+}
+
+func (c *Client) post(ctx context.Context, path string, in, out interface{}) error {
+	return c.do(ctx, http.MethodPost, path, in, out)
+}
+
+func (c *Client) put(ctx context.Context, path string, in, out interface{}) error {
+	return c.do(ctx, http.MethodPut, path, in, out)
+}
+func (c *Client) patch(ctx context.Context, path string, in, out interface{}) error {
+	return c.do(ctx, http.MethodPatch, path, in, out)
+}
+
+func (c *Client) del(ctx context.Context, path string) error {
+	return c.do(ctx, http.MethodDelete, path, nil, nil)
 }
 
 //OLD FUNC

@@ -1,4 +1,4 @@
-package epFulfillment
+package fulfillment
 
 //Tracker holds all tracking details
 type Tracker struct {
