@@ -11,9 +11,9 @@ type SerialNumber struct {
 }
 
 //CreateSerialNumber is for creating a serial number on a product.
-// client := epFulfillment.New("YOUR-API-KEY")
+// client := fulfillment.New("YOUR-API-KEY")
 // product, err := client.GetProduct("PRODUCT-ID")
-// serialNumber, err := client.CreateSerialNumber(&epFulfillment.SerialNumber{
+// serialNumber, err := client.CreateSerialNumber(&fulfillment.SerialNumber{
 // 		Value:   "SERIAL-NUMBER-VALUE",
 // 		Product: product,
 // 	})

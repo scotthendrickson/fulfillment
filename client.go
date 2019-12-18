@@ -10,9 +10,9 @@ import (
 	"net/url"
 )
 
-//To help with consistency between this SDK and EasyPost's GoLang client for their shipping API (https://github.com/EasyPost/easypost-go)
+//To help with consistency between this SDK and EasyPost's GoLang client for their shipping API
 //I have taken most of the main functionality and used it here. You can reference that work here https://github.com/EasyPost/easypost-go.
-const defaultUserAgent = "epFulfillment Go Client V0.0.2"
+const defaultUserAgent = "fulfillment Go Client V0.0.2"
 
 var apiBaseURL = &url.URL{
 	Scheme: "https", Host: "api.easypost.com", Path: "fulfillment/vendor/v2/",
@@ -62,18 +62,6 @@ func (c *Client) client() *http.Client {
 	}
 	return http.DefaultClient
 }
-
-//OLD CODE
-// //BaseURL will be used to construct other URL's
-// const BaseURL = "https://api.easypost.com/fulfillment/vendor/v2/"
-
-// //APIKey is for authentication with the EasyPost API and is required
-// var APIKey string
-
-// //SetAPIKey will allow you to set the API key on the request
-// func SetAPIKey(apiKey string) {
-// 	APIKey = apiKey
-// }
 
 //mainRequest is the base function for doing any call to the EP Fulfillment
 //API. It can be used to facilitate any crud operation
@@ -159,47 +147,3 @@ func (c *Client) patch(ctx context.Context, path string, in, out interface{}) er
 func (c *Client) del(ctx context.Context, path string) error {
 	return c.do(ctx, http.MethodDelete, path, nil, nil)
 }
-
-//OLD FUNC
-// func mainRequest(method, path string, in, out interface{}) error {
-// 	body, err := json.Marshal(in)
-
-// 	if err != nil {
-// 		fmt.Println(err)
-// 	}
-
-// 	req, err := http.NewRequest(method, BaseURL+path, bytes.NewBuffer(body))
-// 	if err != nil {
-// 		fmt.Println(err)
-// 	}
-
-// 	if APIKey != "" {
-// 		req.SetBasicAuth(APIKey, "")
-// 	} else {
-// 		req.SetBasicAuth(os.Getenv("epTest"), "")
-// 	}
-
-// 	req.Header.Set("Content-Type", "application/json")
-// 	req.Header.Set("User-Agent", "epFulfillment Go Client V0.0.1")
-
-// 	resp, err := http.DefaultClient.Do(req)
-// 	if err != nil {
-// 		fmt.Println(err)
-// 	}
-// 	defer resp.Body.Close()
-
-// 	if resp.StatusCode >= 200 && resp.StatusCode <= 299 {
-// 		if out != nil {
-// 			return json.NewDecoder(resp.Body).Decode(out)
-// 		}
-// 		return nil
-// 	}
-
-// 	buf, _ := ioutil.ReadAll(resp.Body)
-// 	apiErr := &APIError{Status: resp.Status, StatusCode: resp.StatusCode}
-// 	if json.Unmarshal(buf, &apiErrorResponse{Error: apiErr}) != nil {
-// 		apiErr.Message = string(buf)
-// 	}
-
-// 	return apiErr
-// }

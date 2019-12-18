@@ -34,18 +34,18 @@ type InboundPackageLineItem struct {
 
 //CreateInboundPackage will take an Advanced Shipment Notice ID and then create the inbound package
 //attached to that particular Advanced Shipment Notice.
-// client := epFulfillment.New("YOUR-API-KEY")
+// client := fulfillment.New("YOUR-API-KEY")
 // asn, err := client.GetASN("ADVANCED-SHIPMENT-NOTICE-ID")
 // product, err := client.GetProduct("PRODUCT-ID")
-// epLineItem := &epFulfillment.InboundPackageLineItem{
+// epLineItem := &fulfillment.InboundPackageLineItem{
 // 		Product: product,
 // 		Units:   121,
 // 	}
-// 	inboundPackage, err := client.CreateInboundPackage(asn.ID, &epFulfillment.InboundPackage{
+// 	inboundPackage, err := client.CreateInboundPackage(asn.ID, &fulfillment.InboundPackage{
 // 		Name:         "IP1",
 // 		Comments:     "First set of Inbound Packages",
 // 		TrackingCode: product.Title,
-// 		LineItems:    []*epFulfillment.InboundPackageLineItem{epLineItem},
+// 		LineItems:    []*fulfillment.InboundPackageLineItem{epLineItem},
 // 	})
 // 	if err != nil {
 // 		fmt.Fprintln(os.Stderr, "error creating", err)
@@ -59,7 +59,7 @@ func (c *Client) CreateInboundPackage(asnID string, inboundPackage *InboundPacka
 }
 
 //UpdateInboundPackage this will take an Advanced Shipment Notice ID as well as the Inbound package and update the Inbound Package.
-// client := epFulfillment.New("YOUR-API-KEY")
+// client := fulfillment.New("YOUR-API-KEY")
 // inboundPackage, err := client.GetInboundPackage("ADVANCED-SHIPMENT-NOTICE-ID", "INBOUND-PACKAGE-ID")
 // for i := range inboundPackage.LineItems {
 // 		inboundPackage.LineItems[i].Units = inboundPackage.LineItems[i].Units + 5
@@ -71,14 +71,14 @@ func (c *Client) UpdateInboundPackage(asnID string, inboundPackage *InboundPacka
 }
 
 //DeleteInboundPackage this will take an Advanced Shipment Notice ID as well as the Inbound Package ID and delete the specific Inbound Package.
-// client := epFulfillment.New("YOUR-API-KEY")
+// client := fulfillment.New("YOUR-API-KEY")
 // err := client.DeleteInboundPackage("ADVANCED-SHIPMENT-NOTICE-ID", "INBOUND-PACKAGE-ID")
 func (c *Client) DeleteInboundPackage(asnID string, inboundPackage string) (err error) {
 	return c.del(nil, "advanced_shipment_notices/"+asnID+"/inbound_packages/"+inboundPackage)
 }
 
-//ListInboundPackages this func (c *Client) will an Advanced Shipment Notice ID and then return a list of Inbound Packages on that ASN
-// client := epFulfillment.New("YOUR-API-KEY")
+//ListInboundPackages this will take an Advanced Shipment Notice ID and then return a list of Inbound Packages on that ASN
+// client := fulfillment.New("YOUR-API-KEY")
 // inboundPackages, err := client.ListInboundPackages("ADVANCED-SHIPMENT-NOTICE-ID")
 // 	for i := range inboundPackages.InboundPackages {
 // 		fmt.Printf("%+v\n", inboundPackages.InboundPackages[i].ID)
@@ -88,8 +88,8 @@ func (c *Client) ListInboundPackages(asnID string, opt *ListOptions) (ipl *Inbou
 	return
 }
 
-//GetInboundPackage this func (c *Client) will an Advanced Shipment Notice ID and then return the Inbound Package object for that ID
-// client := epFulfillment.New("YOUR-API-KEY")
+//GetInboundPackage this will take an Advanced Shipment Notice ID and then return the Inbound Package object for that ID
+// client := fulfillment.New("YOUR-API-KEY")
 // inboundPackage, err := client.GetInboundPackage("ADVANCED-SHIPMENT-NOTICE-ID", "INBOUND-PACKAGE-ID")
 func (c *Client) GetInboundPackage(asnID string, ipID string) (ip *InboundPackage, err error) {
 	err = c.get(nil, "advanced_shipment_notices/"+asnID+"/inbound_packages/"+ipID, &ip)

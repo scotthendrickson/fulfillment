@@ -2,7 +2,7 @@ package fulfillment
 
 import "net/http"
 
-//AdvancedShipmentNotice helps us track inbound shipments to for inventory replenishment.
+//AdvancedShipmentNotice helps us track inbound shipments to add inventory.
 type AdvancedShipmentNotice struct {
 	ID                string `json:"id,omitempty"`
 	CreatedAt         int64  `json:"created_at,omitempty"`
@@ -23,7 +23,7 @@ type ASNList struct {
 	AdvancedShipmentNotices []*AdvancedShipmentNotice `json:"advanced_shipment_notices,omitempty"`
 }
 
-//ListOptions is for specifying what options you want set on the get all request
+//ListOptions is for specifying what options you want set on the get request
 type ListOptions struct {
 	Limit   int64 `json:"limit,omitempty"`
 	Offset  int64 `json:"offset,omitempty"`
@@ -32,8 +32,8 @@ type ListOptions struct {
 }
 
 //CreateASN is for creating an ASN with the EP fulfillment API
-// client := epFulfillment.New("YOUR-API-KEY")
-// asn, err := client.CreateASN(&epFulfillment.AdvancedShipmentNotice{
+// client := fulfillment.New("YOUR-API-KEY")
+// asn, err := client.CreateASN(&fulfillment.AdvancedShipmentNotice{
 // 	Comments: "PO#123456",
 // 	WarehouseID: "wh_303046cf435e416ba334618730dd7c2b",
 // })
@@ -49,7 +49,7 @@ func (c *Client) CreateASN(asn *AdvancedShipmentNotice) (a *AdvancedShipmentNoti
 }
 
 //UpdateASN is for updating an ASN with any necessary changes
-// client := epFulfillment.New("YOUR-API-KEY")
+// client := fulfillment.New("YOUR-API-KEY")
 // asn, err := client.GetASN("ADVANCED-SHIPMENT-NOTICE-ID")
 // 	asn.Comments = "PO#555555"
 // 	asn, err = client.UpdateASN(asn)
@@ -59,7 +59,7 @@ func (c *Client) UpdateASN(asn *AdvancedShipmentNotice) (a *AdvancedShipmentNoti
 }
 
 //MarkASNComplete is for updating an ASN as completed
-// client := epFulfillment.New("YOUR-API-KEY")
+// client := fulfillment.New("YOUR-API-KEY")
 // asn, err := client.MarkASNComplete("ADVANCED-SHIPMENT-NOTICE-ID")
 func (c *Client) MarkASNComplete(id string) (a *AdvancedShipmentNotice, err error) {
 	err = c.patch(nil, "advanced_shipment_notices/"+id+"/complete", nil, &a)
@@ -67,15 +67,15 @@ func (c *Client) MarkASNComplete(id string) (a *AdvancedShipmentNotice, err erro
 }
 
 //DeleteASN is used to delete an ASN
-// client := epFulfillment.New("YOUR-API-KEY")
+// client := fulfillment.New("YOUR-API-KEY")
 // err := client.DeleteASN("ADVANCED-SHIPMENT-NOTICE-ID")
 func (c *Client) DeleteASN(id string) error {
 	return c.del(nil, "advanced_shipment_notices/"+id)
 }
 
 //ListASNs will retrieve a list of all Advanced Shipment Notices on the account
-// client := epFulfillment.New("YOUR-API-KEY")
-// asnList, err := client.ListASNs(&epFulfillment.ListOptions{
+// client := fulfillment.New("YOUR-API-KEY")
+// asnList, err := client.ListASNs(&fulfillment.ListOptions{
 // 		PerPage: 30,
 // 	})
 func (c *Client) ListASNs(in *ListOptions) (asnlist *ASNList, err error) {
@@ -83,8 +83,8 @@ func (c *Client) ListASNs(in *ListOptions) (asnlist *ASNList, err error) {
 	return
 }
 
-//GetASN will retrieve a single ASN by id provided
-// client := epFulfillment.New("YOUR-API-KEY")
+//GetASN will retrieve a single ASN by the provided id
+// client := fulfillment.New("YOUR-API-KEY")
 // asn, err := client.GetASN("ADVANCED-SHIPMENT-NOTICE-ID")
 func (c *Client) GetASN(id string) (a *AdvancedShipmentNotice, err error) {
 	err = c.get(nil, "advanced_shipment_notices/"+id, &a)

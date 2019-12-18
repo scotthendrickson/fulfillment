@@ -34,18 +34,18 @@ type Dimension struct {
 }
 
 //CreateProduct is used to create a new Product object.
-// client := epFulfillment.New("YOUR-API-KEY")
-// 	product, err := client.CreateProduct(&epFulfillment.Product{
+// client := fulfillment.New("YOUR-API-KEY")
+// 	product, err := client.CreateProduct(&fulfillment.Product{
 // 		Title:         "Tester McTester Mouse",
 // 		Barcode:       "8161616161616",
 // 		Type:          "merchandise",
 // 		OriginCountry: "US",
 // 		HsCode:        "6103.22.0050",
-// 		Length:        &epFulfillment.Dimension{Value: 15.0, Unit: "IN"},
-// 		Width:         &epFulfillment.Dimension{Value: 7.0, Unit: "IN"},
-// 		Height:        &epFulfillment.Dimension{Value: 1.0, Unit: "IN"},
-// 		Weight:        &epFulfillment.Dimension{Value: 10.0, Unit: "OZ"},
-// 		Price:         &epFulfillment.Dimension{Value: 20.0, Unit: "USD"},
+// 		Length:        &fulfillment.Dimension{Value: 15.0, Unit: "IN"},
+// 		Width:         &fulfillment.Dimension{Value: 7.0, Unit: "IN"},
+// 		Height:        &fulfillment.Dimension{Value: 1.0, Unit: "IN"},
+// 		Weight:        &fulfillment.Dimension{Value: 10.0, Unit: "OZ"},
+// 		Price:         &fulfillment.Dimension{Value: 20.0, Unit: "USD"},
 // 	})
 // if err != nil {
 // 	fmt.Fprintln(os.Stderr, "error creating", err)
@@ -59,7 +59,7 @@ func (c *Client) CreateProduct(product *Product) (p *Product, err error) {
 }
 
 //GetProduct this is used for retrieving a single Product from the API
-// client := epFulfillment.New("YOUR-API-KEY")
+// client := fulfillment.New("YOUR-API-KEY")
 // product, err := client.GetProduct("PRODUCT-ID")
 // if err != nil {
 // 		fmt.Fprintln(os.Stderr, "error creating", err)
@@ -73,8 +73,8 @@ func (c *Client) GetProduct(id string) (p *Product, err error) {
 }
 
 //ListProducts will retrieve a list of all products on the account
-// client := epFulfillment.New("YOUR-API-KEY")
-// 	products, err := client.ListProducts(&epFulfillment.ListOptions{
+// client := fulfillment.New("YOUR-API-KEY")
+// 	products, err := client.ListProducts(&fulfillment.ListOptions{
 // 		PerPage: 3,
 // 		Page:    2,
 // 	})
@@ -92,7 +92,7 @@ func (c *Client) ListProducts(opt *ListOptions) (products *Products, err error) 
 }
 
 //UpdateProduct allows for updating a single product
-// client := epFulfillment.New("YOUR-API-KEY")
+// client := fulfillment.New("YOUR-API-KEY")
 // product, err := client.GetProduct("PRODUCT-ID")
 // product.Title = "New Tester McTester Mouse"
 // product, err = client.UpdateProduct(product)
@@ -103,7 +103,7 @@ func (c *Client) UpdateProduct(product *Product) (p *Product, err error) {
 }
 
 //DeleteProduct for deleting a product by id
-// client := epFulfillment.New("YOUR-API-KEY")
+// client := fulfillment.New("YOUR-API-KEY")
 // client.DeleteProduct("PRODUCT-ID")
 func (c *Client) DeleteProduct(id string) error {
 	return c.del(nil, "products/"+id)

@@ -2,7 +2,6 @@ package fulfillment
 
 import (
 	"net/http"
-	"net/url"
 )
 
 //Inventories consists of the warehouse where the product is stored and relevant information regarding that product
@@ -19,47 +18,61 @@ type InventoriesList struct {
 	Inventories []*Inventories `json:"inventories,omitempty"`
 }
 
+//InventoriesOptions allows for setting product_id's, includes, and list options
+type InventoriesOptions struct {
+	Limit      int64    `json:"limit,omitempty"`
+	Offset     int64    `json:"offset,omitempty"`
+	Page       int      `json:"page,omitempty"`
+	PerPage    int64    `json:"per_page,omitempty"`
+	ProductIDs []string `json:"product_ids,omitempty"`
+	Includes   []string `json:"includes,omitempty"`
+}
+
 //ListInventories can be used to retrieve all inventories on your products or only specific products
-//This one can take three arguements, a list of product id's, an Includes list, and List Options.
+//
 //If a list of product id's is not supplied it will return all products and their quantity of units in
-//each warehouse. Any product id's supplied in the list will limit the returned information to just those products.
+//each warehouse. Any product id's supplied in the list will limit the returned information to just
+//those products. When no product id's are supplied you can make use of the options per_page, limit,
+//page, and offset to take advantage of pagination on the results. If any product id's are included
+//though the API will ignore the options per_page, limit, page, and offset.
+//
 //The includes list can consist of only two string options, either "product" or "warehouse". If you put "product" in the list it
 //will return the whole product object and quantity of units in each warehouse. For "warehouse" if you include it in the list it
 //will return the full warehouse object but if left out it will only return the warehouse id.
-//List options can be used to set per_page,page, limit, and offset
+//
 //Example calls:
-// client := epFulfillment.New("YOUR-API-KEY")
+//client := fulfillment.New("YOUR-API-KEY")
+//
 //This will return a information on a single product, the warehouse id's, product id, and quantity of units in each warehouse
-//inventories, err := client.ListInventories([]string{"PRODUCT-ID"}, []string{}, nil)
+// inventories, err := client.ListInventories(&fulfillment.InventoriesOptions{
+// ProductIDs: []string{"PRODUCT-ID"},
+// })
 //
-//This will return a information on a single product, the warehouse id's, the product object, and quantity of units in each warehouse
-//inventories, err := client.ListInventories([]string{"PRODUCT-ID"}, []string{"product"}, nil)
+//This will return information on a single product, the warehouse id's, the product object, and quantity of units in each warehouse
+// inventories, err := client.ListInventories(&fulfillment.InventoriesOptions{
+// ProductIDs: []string{"PRODUCT-ID"},
+// Includes: []string{"product"},
+// })
 //
-//This will return a information on a single product, the each warehouse object, product id, and quantity of units in each warehouse
-//inventories, err := client.ListInventories([]string{"PRODUCT-ID"}, []string{"warehouse"}, nil)
+//This will return information on a single product, the each warehouse object, product id, and quantity of units in each warehouse
+// inventories, err := client.ListInventories(&fulfillment.InventoriesOptions{
+// ProductIDs: []string{"PRODUCT-ID"},
+// Includes: []string{"warehouse"},
+// })
 //
-//This will return a information on a single product, the each warehouse object, the product object, and quantity of units in each warehouse
-//inventories, err := client.ListInventories([]string{"PRODUCT-ID"}, []string{"product", "warehouse"}, nil)
-func (c *Client) ListInventories(productIds []string, includes []string, opt *ListOptions) (il InventoriesList, err error) {
-	baseURL, err := url.Parse("inventories")
-
-	params := url.Values{}
-
-	if productIds != nil {
-		for i := range productIds {
-			params.Add("product_ids[]", productIds[i])
-		}
-	}
-
-	if includes != nil {
-		for i := range includes {
-			if includes[i] == "product" || includes[i] == "warehouse" {
-				params.Add("includes[]", includes[i])
-			}
-		}
-	}
-	baseURL.RawQuery = params.Encode()
-
-	err = c.do(nil, http.MethodGet, baseURL.String(), &opt, &il)
+//This will return information on a single product, the each warehouse object, the product object, and quantity of units in each warehouse
+// inventories, err := client.ListInventories(&fulfillment.InventoriesOptions{
+// ProductIDs: []string{"PRODUCT-ID"},
+// Includes: []string{"warehouse", "product"},
+// })
+//
+//This will return a paginated list of products limited to the first page of 5 products, the product object and the warehouse object
+// inventories, err := client.ListInventories(&fulfillment.InventoriesOptions{
+// 	Includes: []string{"warehouse", "product"},
+// 	PerPage:  0,
+// 	Page: 5,
+// })
+func (c *Client) ListInventories(opt *InventoriesOptions) (il *InventoriesList, err error) {
+	err = c.do(nil, http.MethodGet, "inventories", opt, &il)
 	return
 }

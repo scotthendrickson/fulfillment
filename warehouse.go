@@ -1,6 +1,6 @@
 package fulfillment
 
-//Warehouse is how to manage where your inventory is
+//Warehouse is the information for each warehouse such as address and name
 type Warehouse struct {
 	ID         string   `json:"id,omitempty"`
 	CreatedAt  int64    `json:"created_at,omitempty"`
@@ -18,8 +18,8 @@ type Warehouses struct {
 }
 
 //ListWarehouses will allow you to retrieve a list of all warehouses
-//epFulfillment.SetAPIKey("YOUR-API-KEY")
-//warehouses, err := epFulfillment.RetrieveAllWarehouses()
+//client := fulfillment.New("YOUR-API-KEY")
+//warehouses, err := client.ListWarehouses()
 func (c *Client) ListWarehouses() (warehouses *Warehouses, err error) {
 	err = c.get(nil, "warehouses", &warehouses)
 	return

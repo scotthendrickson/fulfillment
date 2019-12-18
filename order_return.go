@@ -39,16 +39,16 @@ type OrderReturnLineItem struct {
 
 //CreateOrderReturn allows for the creation of an order return
 //One thing to note is that both Order ID and LineItems are required by the EasyPostAPI
-//client := epFulfillment.New("YOUR-API-KEY")
+//client := fulfillment.New("YOUR-API-KEY")
 // warehouses, err := client.ListWarehouses()
-// warehouse := &epFulfillment.Warehouse{}
+// warehouse := &fulfillment.Warehouse{}
 // for i := range warehouses.Warehouses {
 // 	if warehouses.Warehouses[i].ID == "WAREHOUSE-ID" {
 // 		warehouse = warehouses.Warehouses[i]
 // 	}
 // }
-// orderReturn, err := client.CreateOrderReturn(&epFulfillment.OrderReturn{
-// 	LineItems: []*epFulfillment.OrderReturnLineItem{&epFulfillment.OrderReturnLineItem{
+// orderReturn, err := client.CreateOrderReturn(&fulfillment.OrderReturn{
+// 	LineItems: []*fulfillment.OrderReturnLineItem{&fulfillment.OrderReturnLineItem{
 // 		ProductID:  "PRODUCT-ID",
 // 		ReasonType: "wrong_size",
 // 		Units:      1,
@@ -62,15 +62,15 @@ func (c *Client) CreateOrderReturn(orderReturn *OrderReturn) (or *OrderReturn, e
 }
 
 //DeleteOrderReturn is for deleting an Order return by provided id
-//client := epFulfillment.New("YOUR-API-KEY")
-//epFulfillment.DeleteOrderReturn("ORDER-RETURN-ID")
+//client := fulfillment.New("YOUR-API-KEY")
+//fulfillment.DeleteOrderReturn("ORDER-RETURN-ID")
 func (c *Client) DeleteOrderReturn(id string) error {
 	return c.del(nil, "order_returns/"+id)
 }
 
 //ListOrderReturns will return a list of all your order returns
-//client := epFulfillment.New("YOUR-API-KEY")
-// orderReturns, err := client.ListOrderReturns(&epFulfillment.ListOptions{
+//client := fulfillment.New("YOUR-API-KEY")
+// orderReturns, err := client.ListOrderReturns(&fulfillment.ListOptions{
 // 	PerPage: 3,
 // 	Page:    0,
 // })
@@ -80,7 +80,7 @@ func (c *Client) ListOrderReturns(opt *ListOptions) (or *OrderReturnList, err er
 }
 
 //GetOrderReturn will retrieve a single OR by id provided
-//client := epFulfillment.New("YOUR-API-KEY")
+//client := fulfillment.New("YOUR-API-KEY")
 // orderReturn, err := client.GetOrderReturn("ORDER-RETURN-ID")
 func (c *Client) GetOrderReturn(id string) (or *OrderReturn, err error) {
 	err = c.get(nil, "order_returns/"+id, &or)
