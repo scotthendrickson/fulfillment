@@ -2,6 +2,9 @@
 
 EasyPost offers an API to their fulfillment customers that allows them to manage all their products, inventories, and orders. Their documentation can be found here https://gist.github.com/att14/ff68a0f2684c711444864dcb1ebf6030 and their website is https://easypost.com.
 
+## Disclaimer
+This SDK is in Beta and while we welcome any issue reports or improvement suggestions we cannot guarantee support at this time.
+
 ## Requirements
 
 This package should work with any recent version of Go
